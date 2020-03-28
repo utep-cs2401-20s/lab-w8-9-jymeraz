@@ -13,12 +13,13 @@ class AminoAcidLL{
   /* Creates a new node, with a given amino acid/codon 
    * pair and increments the codon counter for that codon.
    * NOTE: Does not check for repeats!! */
-  // What to initialize next to?
   AminoAcidLL(String inCodon){
+    // Convert the codon to its respective amino acid.
     aminoAcid = AminoAcidResources.getAminoAcidFromCodon(inCodon);
+    // Retrieve the rest of the possible codons for the amino acid.
     codons = AminoAcidResources.getCodonListForAminoAcid(aminoAcid);
     counts = new int[codons.length];
-    // don't worry about not finding codon.
+    // Increment the codon counter.
     for(int i = 0; i < codons.length; i++){
       if(codons[i].equals(inCodon)){
         counts[i]++;
@@ -33,9 +34,9 @@ class AminoAcidLL{
    * if not passes the task to the next node. 
    * If there is no next node, add a new node to the list that would contain the codon. 
    */
-  // why should it go to the next node if it could check the rest of the codons array in one node?
   // ****CHANGE BACK TO PRIVATE*****
   public void addCodon(String inCodon){
+    // Check if the current amino acid is in the linked list.
     if (aminoAcid == AminoAcidResources.getAminoAcidFromCodon(inCodon)) {
       for (int i = 0; i < codons.length; i++) {
         if (codons[i].equals(inCodon)) {
@@ -45,10 +46,10 @@ class AminoAcidLL{
       }
     }
     if(next != null){
-      // how to call the addCodon method from an instance of AminoAcidLL
-      // use head in tester to call it
+      // Check the next node.
       next.addCodon(inCodon);
     } else {
+      // Create a new node if the amino acid is not in the linked list.
       next = new AminoAcidLL(inCodon);
     }
   }
@@ -137,29 +138,37 @@ class AminoAcidLL{
   /********************************************************************************************/
   /* recursively determines if a linked list is sorted or not */
   public boolean isSorted(){
+    // Iterate through the array as long as there is a next value.
     if(next != null){
+      // If the current amino acid is greater than the next amino acid, return false.
       if(aminoAcid > next.aminoAcid){
         return false;
       }
+      // Call the method again with the next node.
       return next.isSorted();
     }
+    // Return true if the linked list is sorted.
     return true;
   }
 
   /** ***************************************************************************************** */
   /* Static method for generating a linked list from an RNA sequence */
   public static AminoAcidLL createFromRNASequence(String inSequence) {
-    // translate each 3 into amino acid
-    if (inSequence.length() > 2) {
+    // Check that the codons are in groups of three.
+    if (inSequence.length() % 3 == 0) {
+      // Save the starting node.
       AminoAcidLL newNode = new AminoAcidLL(inSequence.substring(0, 3));
 
+      // Add the rest of the codons.
       int i = 3;
       while (i < inSequence.length()) {
         newNode.addCodon(inSequence.substring(i, i + 3));
         i = i + 3;
       }
+      // Return the starting node.
       return newNode;
     }
+    // Return null if the codons were not in groups of three.
     return null;
   }
 
@@ -167,49 +176,56 @@ class AminoAcidLL{
   /********************************************************************************************/
   /* sorts a list by amino acid character*/
   public static AminoAcidLL sort(AminoAcidLL inList) {
+    // Initialize and declare the new starting node.
     AminoAcidLL newStartingNode = inList;
+    // Keep track of the current node and the previous node.
     AminoAcidLL iterator = inList.next;
     AminoAcidLL beforeIterator = inList;
 
     while(iterator != null){
       AminoAcidLL nextNode = iterator.next;
+      // Keep track of the current node and the previous node.
       AminoAcidLL sortedIterator = newStartingNode.next;
       AminoAcidLL beforeSortedIterator = newStartingNode;
 
+      // Check if the value is smaller than the starting node.
+      // If the value is smaller, set the starting node to it.
       if(iterator.aminoAcid < newStartingNode.aminoAcid){
         beforeIterator.next = iterator.next;
         AminoAcidLL temp = newStartingNode;
         newStartingNode = iterator;
         newStartingNode.next = temp;
       } else {
+        // Iterate through the linked list up until the sorted region.
         while (sortedIterator != iterator){
           AminoAcidLL sortedIteratorReference = sortedIterator.next;
+
+          // Check where to insert the selected value.
           if(iterator.aminoAcid < sortedIterator.aminoAcid){
             beforeSortedIterator.next = iterator;
             AminoAcidLL temp = iterator.next;
             iterator.next = sortedIterator;
             sortedIterator.next = temp;
           }
-
+          // Find the previous node.
           AminoAcidLL findNodeBefore = newStartingNode;
           while (findNodeBefore.next != sortedIteratorReference) {
             findNodeBefore = findNodeBefore.next;
           }
-
+          // Update the current and previous nodes.
           beforeSortedIterator = findNodeBefore;
           sortedIterator = sortedIteratorReference;
         }
       }
-
+      // Find the previous node.
       AminoAcidLL findNodeBefore = newStartingNode;
       while (findNodeBefore.next != nextNode) {
         findNodeBefore = findNodeBefore.next;
       }
-
+      // Update the current and previous nodes.
       beforeIterator = findNodeBefore;
       iterator = nextNode;
     }
-
     return newStartingNode;
   }
 }
