@@ -35,7 +35,7 @@ class AminoAcidLL{
    * If there is no next node, add a new node to the list that would contain the codon. 
    */
   // ****CHANGE BACK TO PRIVATE*****
-  public void addCodon(String inCodon){
+  private void addCodon(String inCodon){
     // Check if the current amino acid is in the linked list.
     if (aminoAcid == AminoAcidResources.getAminoAcidFromCodon(inCodon)) {
       for (int i = 0; i < codons.length; i++) {
@@ -102,22 +102,23 @@ class AminoAcidLL{
   /********************************************************************************************/
   /* Recursively returns the total list of amino acids in the order that they are in in the linked list. */
   public char[] aminoAcidList(){
+    // Place the current amino acid in the array if next is null.
     if(next == null){
       return new char[]{aminoAcid};
     }
-    // place the current amino acid in the array
-    next.aminoAcidList();
-    return next.aminoAcidList();
 
-  }
+    // Create an array with each amino acid through recursive calls.
+    char[] arr = next.aminoAcidList();
+    // Declare an array one size larger than the previous array.
+    char[] finalArray = new char[arr.length + 1];
+    // Place the current amino acid in the beginning of the array.
+    finalArray[0] = aminoAcid;
 
-  public char[] aminoAdd(char[] previousArray, char aminoToAdd){
-    char[] newArray = new char[previousArray.length + 1];
-    for(int i = 0; i < newArray.length; i++){
-      newArray[i] = previousArray[i];
+    // Manually copy the array.
+    for(int i = 1; i < finalArray.length; i++){
+      finalArray[i] = arr[i - 1];
     }
-    newArray[newArray.length - 1] = aminoToAdd;
-    return newArray;
+    return finalArray;
   }
 
   public void printNode() {
@@ -131,7 +132,23 @@ class AminoAcidLL{
   /********************************************************************************************/
   /* Recursively returns the total counts of amino acids in the order that they are in in the linked list. */
   public int[] aminoAcidCounts(){
-    return new int[]{};
+    // Place the current count of the amino acid in the array if next is null.
+    if(next == null){
+      return new int[]{totalCount()};
+    }
+
+    // Create an array with each count of the amino acid through recursive calls.
+    int[] arr = next.aminoAcidCounts();
+    // Declare an array one size larger than the previous array.
+    int[] finalArray = new int[arr.length + 1];
+    // Place the current count of the amino acid in the beginning of the array.
+    finalArray[0] = totalCount();
+
+    // Manually copy the array.
+    for(int i = 1; i < finalArray.length; i++){
+      finalArray[i] = arr[i - 1];
+    }
+    return finalArray;
   }
 
 

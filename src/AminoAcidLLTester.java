@@ -5,24 +5,22 @@ import org.junit.jupiter.api.Test;
 
 public class AminoAcidLLTester {
   @Test
-  public void test(){
-  AminoAcidLL testOne = new AminoAcidLL("GGG");
-  testOne.addCodon("GAG");
-  testOne.addCodon("ACG");
+  public void testList(){
+    // G E T
+  AminoAcidLL testOne = AminoAcidLL.createFromRNASequence("GGGGAGACG");
   char[] arr = testOne.aminoAcidList();
 
-    int count = 1;
-    System.out.print(count + ": ");
-    testOne.printNode();
-    AminoAcidLL iterator = testOne.getNext();
-    while (iterator != null) {
-      count++;
-      System.out.print(count + ": ");
-      iterator.printNode();
-      iterator = iterator.getNext();
+    System.out.println("amino acid list method");
+    for(int i = 0; i < arr.length; i++){
+      System.out.print(arr[i] + " ");
     }
+  }
 
-    System.out.println();
+  @Test
+  public void testList2(){
+    // G 3 E 1 T 3
+    AminoAcidLL testOne = AminoAcidLL.createFromRNASequence("GGGGGAGGCGAGACGACUUAC");
+    int[] arr = testOne.aminoAcidCounts();
 
     System.out.println("amino acid list method");
     for(int i = 0; i < arr.length; i++){
