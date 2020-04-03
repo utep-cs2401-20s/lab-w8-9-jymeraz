@@ -34,7 +34,6 @@ class AminoAcidLL{
    * if not passes the task to the next node. 
    * If there is no next node, add a new node to the list that would contain the codon. 
    */
-  // ****CHANGE BACK TO PRIVATE*****
   private void addCodon(String inCodon){
     // Check if the current amino acid is in the linked list.
     if (aminoAcid == AminoAcidResources.getAminoAcidFromCodon(inCodon)) {
@@ -88,14 +87,166 @@ class AminoAcidLL{
   /* Recursive method that finds the differences in **Amino Acid** counts. 
    * the list *must* be sorted to use this method */
   public int aminoAcidCompare(AminoAcidLL inList){
-    return 0;
+    if(inList == null){
+      int diff = totalCount();
+      while(next != null){
+        diff += next.totalCount();
+        next = next.next;
+      }
+      return diff;
+    }
+    // Check if the list is sorted.
+    if(!inList.isSorted()){
+      return -1;
+    }
+
+    int diff = 0;
+    // Check if the amino acid in the instance equals the amino acid in the parameter.
+    if(aminoAcid == inList.aminoAcid){
+      // Compute the total difference of the two lists.
+      diff += totalDiff(inList);
+      // Return the final difference if it is the end of both of the lists.
+      if(next == null && inList.next == null){
+        return diff;
+      } else if (next == null){
+        // Sum up the rest of the parameter list if the rest of the instance is empty.
+        while (inList.next != null) {
+          diff += inList.next.totalCount();
+          inList = inList.next;
+        }
+        return diff;
+      } else if (inList.next == null){
+        // Sum up the rest of the instance list if the rest of the parameter list is empty.
+        while(next != null){
+          diff += next.totalCount();
+          next = next.next;
+        }
+        return diff;
+      } else {
+        // Recursive call with the next node in the instance and the next node of the argument.
+        diff += next.aminoAcidCompare(inList.next);
+      }
+      // Check if the amino acid in the instance is greater than the amino acid in the parameter.
+    } else if (aminoAcid > inList.aminoAcid){
+      diff += inList.totalCount();
+      // Return the final difference if it is the end of both of the lists.
+      if(next == null && inList.next == null){
+        diff += totalCount();
+        return diff;
+      } else if(inList.next == null){
+        // Sum up the rest of the instance list if the rest of the parameter list is empty.
+        diff += totalCount();
+        while(next != null){
+          diff += next.totalCount();
+          next = next.next;
+        }
+      } else {
+        // Recursive call with the next node in the argument.
+        diff += aminoAcidCompare(inList.next);
+      }
+      // The amino acid in the instance is less than the amino acid in the parameter.
+    } else {
+      diff += totalCount();
+      // Return the final difference if it is the end of both of the lists.
+      if(next == null && inList.next == null){
+        diff += inList.totalCount();
+        return diff;
+      } else if (next == null){
+        // Sum up the rest of the parameter list if the rest of the instance is empty.
+        diff += inList.totalCount();
+        while (inList.next != null) {
+          diff += inList.next.totalCount();
+          inList = inList.next;
+        }
+      } else {
+        // Recursive call with the next node in the instance.
+        diff += next.aminoAcidCompare(inList);
+      }
+    }
+    return diff;
   }
 
   /********************************************************************************************/
   /* Same ad above, but counts the codon usage differences
    * Must be sorted. */
   public int codonCompare(AminoAcidLL inList){
-    return 0;
+    if(inList == null){
+      int diff = totalCount();
+      while(next != null){
+        diff += next.totalCount();
+        next = next.next;
+      }
+      return diff;
+    }
+    // Check if the list is sorted.
+    if(!inList.isSorted() || !isSorted()){
+      return -1;
+    }
+
+    int diff = 0;
+    // Check if the amino acid in the instance equals the amino acid in the parameter.
+    if(aminoAcid == inList.aminoAcid){
+      // Compute the codon difference of the two lists.
+      diff += codonDiff(inList);
+      // Return the final difference if it is the end of both of the lists.
+      if(next == null && inList.next == null){
+        return diff;
+      } else if (next == null){
+        // Sum up the rest of the parameter list if the rest of the instance is empty.
+        while (inList.next != null) {
+          diff += inList.next.totalCount();
+          inList = inList.next;
+        }
+        return diff;
+      } else if (inList.next == null){
+        // Sum up the rest of the instance list if the rest of the parameter list is empty.
+        while(next != null){
+          diff += next.totalCount();
+          next = next.next;
+        }
+        return diff;
+      } else {
+        // Recursive call with the next node in the instance and the next node of the argument.
+        diff += next.aminoAcidCompare(inList.next);
+      }
+      // Check if the amino acid in the instance is greater than the amino acid in the parameter.
+    } else if (aminoAcid > inList.aminoAcid){
+      diff += inList.totalCount();
+      // Return the final difference if it is the end of both of the lists.
+      if(next == null && inList.next == null){
+        diff += totalCount();
+        return diff;
+      } else if(inList.next == null){
+        // Sum up the rest of the instance list if the rest of the parameter list is empty.
+        diff += totalCount();
+        while(next != null){
+          diff += next.totalCount();
+          next = next.next;
+        }
+      } else {
+        // Recursive call with the next node in the argument.
+        diff += aminoAcidCompare(inList.next);
+      }
+      // The amino acid in the instance is less than the amino acid in the parameter.
+    } else {
+      diff += totalCount();
+      // Return the final difference if it is the end of both of the lists.
+      if(next == null && inList.next == null){
+        diff += inList.totalCount();
+        return diff;
+      } else if (next == null){
+        // Sum up the rest of the parameter list if the rest of the instance is empty.
+        diff += inList.totalCount();
+        while (inList.next != null) {
+          diff += inList.next.totalCount();
+          inList = inList.next;
+        }
+      } else {
+        // Recursive call with the next node in the instance.
+        diff += next.aminoAcidCompare(inList);
+      }
+    }
+    return diff;
   }
 
 
@@ -119,14 +270,6 @@ class AminoAcidLL{
       finalArray[i] = arr[i - 1];
     }
     return finalArray;
-  }
-
-  public void printNode() {
-    System.out.println("Node contains aminoAcid of: " + aminoAcid);
-  }
-
-  public AminoAcidLL getNext() {
-    return next;
   }
 
   /********************************************************************************************/
@@ -171,6 +314,9 @@ class AminoAcidLL{
   /** ***************************************************************************************** */
   /* Static method for generating a linked list from an RNA sequence */
   public static AminoAcidLL createFromRNASequence(String inSequence) {
+    if(inSequence.length() == 0){
+      return null;
+    }
     // Check that the codons are in groups of three.
     if (inSequence.length() % 3 == 0) {
       // Save the starting node.
@@ -186,9 +332,21 @@ class AminoAcidLL{
       return newNode;
     }
     // Return null if the codons were not in groups of three.
+    System.out.println("Error: The string inputted did not contain codons in pairs of 3.");
     return null;
   }
 
+  // Helper methods to test createFromRNASequence
+  public void printNode() {
+    System.out.println("Node contains aminoAcid of: " + aminoAcid);
+  }
+
+  public AminoAcidLL getNext() {
+    return next;
+  }
+  public char getAminoAcid() {
+    return aminoAcid;
+  }
 
   /********************************************************************************************/
   /* sorts a list by amino acid character*/
@@ -218,6 +376,7 @@ class AminoAcidLL{
           AminoAcidLL sortedIteratorReference = sortedIterator.next;
 
           // Check where to insert the selected value.
+          // Switch the pointers.
           if(iterator.aminoAcid < sortedIterator.aminoAcid){
             beforeSortedIterator.next = iterator;
             AminoAcidLL temp = iterator.next;
