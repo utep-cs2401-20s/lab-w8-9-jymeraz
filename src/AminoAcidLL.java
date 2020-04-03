@@ -337,10 +337,6 @@ class AminoAcidLL{
   }
 
   // Helper methods to test createFromRNASequence
-  public void printNode() {
-    System.out.println("Node contains aminoAcid of: " + aminoAcid);
-  }
-
   public AminoAcidLL getNext() {
     return next;
   }
